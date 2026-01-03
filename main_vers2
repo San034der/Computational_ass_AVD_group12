@@ -126,15 +126,44 @@ data3 <- data3 %>%
   ungroup() %>%
   select(-prev_date, -prev_time)
 
-# Preliminary investigation
-summary(data3)
-str(data3)
+total9<-vector()
+tot9<-vector()
+total9[1]<-sum(data3$W1)
+total9[2]<-sum(data3$W2)
+total9[3]<-sum(data3$W3)
+total9[4]<-sum(data3$W4)
+tot9[1]<-sum(data3$MO)
+tot9[2]<-sum(data3$TU)
+tot9[3]<-sum(data3$WE)
+tot9[4]<-sum(data3$TH)
+tot9[5]<-sum(data3$FR)
+data9a<-data.frame(total9)
+data9a$w<-c("w1","w2","w3","w4")
+data9b<-data.frame(tot9)
+data9b$d<-c("MO","TU","WE","TH","FR")
 
-range(data3$Date_parsed)
-range(data3$Time, na.rm = TRUE)
-range(data3$ScanTime, na.rm = TRUE)
-table(data3$PatientType)
-table(data3$Date)
+data10w1<-data3%>%filter(W1==1)
+data10w2<-data3%>%filter(W2==1)
+data10w3<-data3%>%filter(W3==1)
+data10w4<-data3%>%filter(W4==1)
+data10MO<-data3%>%filter(MO==1)
+data10TU<-data3%>%filter(TU==1)
+data10WE<-data3%>%filter(WE==1)
+data10TH<-data3%>%filter(TH==1)
+data10FR<-data3%>%filter(FR==1)
+
+#preliminary investigation
+summary(data3)
+summary(data5)
+summary(data10MO)
+summary(data10TU)
+summary(data10WE)
+summary(data10TH)
+summary(data10FR)
+summary(data10w1)
+summary(data10w2)
+summary(data10w3)
+summary(data10w4)
 
 # Density + histogram (fixed for new ggplot2: after_stat(density))
 ggplot(data3, aes(x = ScanTime)) +
@@ -146,6 +175,23 @@ ggplot(data3, aes(x = Time)) +
   geom_histogram(aes(y = after_stat(density)), colour="black", fill="steelblue") +
   geom_density(alpha=.2, fill="red") +
   theme_minimal() + xlab("") + ylab("")
+
+ggplot(data5,aes(x=days))+ 
+  geom_line(aes(y=type1Freq),color="blue",alpha=0.2, size=1.2)+
+  geom_line(aes(y=type2Freq),color="red",alpha=0.2, size=1.2)+
+  theme_minimal()+ylab("")+labs(title =)
+
+ggplot(data5,aes(x=sum))+ geom_histogram(color="black", fill="steelblue")
+
+ggplot(data9a, aes(x=w,y = total9))+geom_bar(stat="identity",fill="steelblue")+
+  labs(title = )+ theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
+  theme(panel.background = element_rect(fill='white'))+ylab("number of calls")+
+  scale_fill_continuous()
+
+ggplot(data9b, aes(x=d,y = tot9))+geom_bar(stat="identity",fill="steelblue")+
+  labs(title = )+ theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=1))+
+  theme(panel.background = element_rect(fill='white'))+ylab("number of calls")+
+  scale_fill_continuous()
 
 
 # analysis for types 1 & 2
@@ -728,6 +774,8 @@ data4WE<-data4%>%filter(WE==1)
 data4TH<-data4%>%filter(TH==1)
 data4FR<-data4%>%filter(FR==1)
 
+# add new call.diff2 for the subsample
+
 #parametric duration scan
 #full sample
 Bootstrap.moments.norm(9999,data4$ScanTime,0.05)
@@ -758,6 +806,9 @@ data6TU<-data6%>%filter(TU==1)
 data6WE<-data6%>%filter(WE==1)
 data6TH<-data6%>%filter(TH==1)
 data6FR<-data6%>%filter(FR==1)
+
+# add new call.diff2 for the subsample
+
 #non parametric duration scan
 #full sample
 Bootstrap.moments.NP(9999,data6$ScanTime,0.05)
@@ -786,31 +837,31 @@ Bootstrap.moments.NP(9999,data5$ratio,0.05)
 Bootstrap.moments.NP(9999,data5$numberofcalls,0.05)
 # call frequency
 #full sample
-Bootstrap.moments.NP(9999,data6$call.diff,0.05)
+Bootstrap.moments.NP(9999,data6$call.diff2,0.05)
 #weeks
-Bootstrap.moments.NP(9999,data6W1$call.diff,0.05)
-Bootstrap.moments.NP(9999,data6W2$call.diff,0.05)
-Bootstrap.moments.NP(9999,data6W3$call.diff,0.05)
-Bootstrap.moments.NP(9999,data6W4$call.diff,0.05)
+Bootstrap.moments.NP(9999,data6W1$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data6W2$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data6W3$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data6W4$call.diff2,0.05)
 #days
-Bootstrap.moments.NP(9999,data6MO$call.diff,0.05)
-Bootstrap.moments.NP(9999,data6TU$call.diff,0.05)
-Bootstrap.moments.NP(9999,data6WE$call.diff,0.05)
-Bootstrap.moments.NP(9999,data6TH$call.diff,0.05)
-Bootstrap.moments.NP(9999,data6FR$call.diff,0.05)  
+Bootstrap.moments.NP(9999,data6MO$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data6TU$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data6WE$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data6TH$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data6FR$call.diff2,0.05)  
 #full sample
-Bootstrap.moments.NP(9999,data4$call.diff,0.05)
+Bootstrap.moments.NP(9999,data4$call.diff2,0.05)
 #weeks
-Bootstrap.moments.NP(9999,data4W1$call.diff,0.05)
-Bootstrap.moments.NP(9999,data4W2$call.diff,0.05)
-Bootstrap.moments.NP(9999,data4W3$call.diff,0.05)
-Bootstrap.moments.NP(9999,data4W4$call.diff,0.05)
+Bootstrap.moments.NP(9999,data4W1$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data4W2$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data4W3$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data4W4$call.diff2,0.05)
 #days
-Bootstrap.moments.NP(9999,data4MO$call.diff,0.05)
-Bootstrap.moments.NP(9999,data4TU$call.diff,0.05)
-Bootstrap.moments.NP(9999,data4WE$call.diff,0.05)
-Bootstrap.moments.NP(9999,data4TH$call.diff,0.05)
-Bootstrap.moments.NP(9999,data4FR$call.diff,0.05)
+Bootstrap.moments.NP(9999,data4MO$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data4TU$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data4WE$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data4TH$call.diff2,0.05)
+Bootstrap.moments.NP(9999,data4FR$call.diff2,0.05)
 
 # monte-carlo study non-parametric methods used treatment 2 -------------------------------------------
 
