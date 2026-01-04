@@ -101,6 +101,8 @@ for (k in seq_along(g)) {
   numberofcalls[k] <- nrow(data3 %>% filter(day == g[k]))
 }
 data5$numberofcalls <- numberofcalls
+g<-c(1,4:8,11:15,18:22,25:29)
+data5$days<-g
 
 # Correct call.diff (inter-arrival in working hours; ignore outside 08-17)
 # computed per PatientType across the whole month
